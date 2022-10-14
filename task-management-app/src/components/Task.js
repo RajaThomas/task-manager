@@ -1,5 +1,9 @@
 import "../styles/task.scss";
 import { useState } from "react";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+import moment from 'moment';
 
 export default function Task(props) {
   const { addTask, deleteTask, moveTask, task } = props;
@@ -7,6 +11,8 @@ export default function Task(props) {
   const [urgencyLevel, setUrgencyLevel] = useState(task.urgency);
   const [collapsed, setCollapsed] = useState(task.isCollapsed);
   const [formAction, setFormAction] = useState("");
+  const [deadline, setDeadline] = useState();
+  const [imageBase64, setImageBase64] = useState("");
 
   function setUrgency(event) {
     setUrgencyLevel(event.target.attributes.urgency.value);
@@ -21,11 +27,13 @@ export default function Task(props) {
       } else {
         let newTask = {
           id: task.id,
-          title: event.target.elements.title.value,
+          name: event.target.elements.name.value,
           description: event.target.elements.description.value,
           urgency: urgencyLevel,
           status: task.status,
           isCollapsed: true,
+          deadline: deadline,
+          imageBase64: imageBase64
         };
 
         addTask(newTask);
@@ -66,6 +74,22 @@ export default function Task(props) {
     }
   }
 
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  const covertToBase64 = (e) => {
+    const file = e.target.files[0];
+    getBase64(file).then(base64 => {
+      setImageBase64(base64);
+    });
+  }
+
   return (
     <div className={`task ${collapsed ? "collapsedTask" : ""}`}>
       <button onClick={handleMoveLeft} className="button moveTask">
@@ -74,11 +98,11 @@ export default function Task(props) {
       <form onSubmit={handleSubmit} className={collapsed ? "collapsed" : ""}>
         <input
           type="text"
-          className="title input"
-          name="title"
-          placeholder="Enter Title"
+          className="name input"
+          name="name"
+          placeholder="Enter name"
           disabled={collapsed}
-          defaultValue={task.title}
+          defaultValue={task.name}
         />
         <textarea
           rows="2"
@@ -87,6 +111,17 @@ export default function Task(props) {
           placeholder="Enter Description"
           defaultValue={task.description}
         />
+        <DatePicker
+          name="deadline" className="deadline input"
+          placeholderText="Enter deadline" value={task.deadline != null ? moment(task.deadline).format('L') : deadline}
+          selected={deadline != null ? moment(deadline).format('L') : deadline} onChange={(date) => setDeadline(date)} />
+        <input
+          type="file"
+          id="imageFile"
+          name='imageBase64'
+          //value={task.imageBase64 != null ? task.imageBase64 : imageBase64}
+          className="taskImage input"
+          onChange={(file) => covertToBase64(file)} />
         <div className="urgencyLabels">
           <label className={`low ${urgencyLevel === "low" ? "selected" : ""}`}>
             <input

@@ -49,7 +49,7 @@
       }
     }
 
-    .title {
+    .name {
       margin-bottom: 0.5rem;
       padding: 0.5rem 0;
       width: 100%;
@@ -61,6 +61,17 @@
     }
 
     .description {
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      width: 100%;
+      font-size: 1.1rem;
+
+      &:hover {
+        cursor: text;
+      }
+    }
+
+    .deadline {
       margin-bottom: 0.5rem;
       padding: 0.5rem;
       width: 100%;
@@ -141,7 +152,16 @@
       flex-direction: row;
       align-content: center;
 
-      .title {
+      .name {
+        margin: 0;
+
+        &:hover {
+          border-color: transparent;
+          cursor: default;
+        }
+      }
+
+      .deadline {
         margin: 0;
 
         &:hover {
@@ -156,6 +176,16 @@
       }
 
       .description,
+      label {
+        display: none;
+      }
+
+      .deadline,
+      label {
+        display: none;
+      }
+
+      .taskImage,
       label {
         display: none;
       }

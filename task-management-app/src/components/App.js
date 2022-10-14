@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import "../styles/App.scss";
 import StatusLine from "./StatusLine";
 
+import Button from '@mui/material/Button';
+
 function App() {
   const [tasks, setTasks] = useState([]);
 
@@ -22,9 +24,11 @@ function App() {
       ...tasks,
       {
         id: newTaskId,
-        title: "",
+        name: "",
         description: "",
         urgency: "",
+        deadline: "",
+        imageBase64: "",
         status: status,
       },
     ]);
@@ -87,6 +91,7 @@ function App() {
   return (
     <div className="App">
       <h1>Task Management</h1>
+      <Button variant="contained">REGISTER</Button>
       <main>
         <section>
           <StatusLine
