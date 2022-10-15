@@ -190,6 +190,11 @@
         display: none;
       }
 
+      .imageDisplay,
+      label {
+        display: none;
+      }
+
       label.selected {
         display: inline-block;
         font-weight: 500;

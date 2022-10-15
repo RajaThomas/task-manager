@@ -37,6 +37,7 @@ function App() {
         deadline: "",
         imageBase64: "",
         status: status,
+        fileName:''
       },
     ]);
   }

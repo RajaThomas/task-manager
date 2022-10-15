@@ -8,7 +8,8 @@ export default function Task(props) {
   const [collapsed, setCollapsed] = useState(task ? task.isCollapsed : false);
   const [formAction, setFormAction] = useState("");
   const [deadline, setDeadline] = useState();
-  const [imageBase64, setImageBase64] = useState("");
+  const [imageBase64, setImageBase64] = useState();
+  const [imageName, setImageName] = useState('');
   const [type, setType] = useState('text');
 
   function setUrgency(event) {
@@ -30,7 +31,8 @@ export default function Task(props) {
           status: task.status,
           isCollapsed: true,
           deadline: deadline,
-          imageBase64: imageBase64
+          imageBase64: imageBase64,
+          fileName: imageName
         };
 
         addTask(newTask);
@@ -82,8 +84,11 @@ export default function Task(props) {
 
   const covertToBase64 = (e) => {
     const file = e.target.files[0];
+
     getBase64(file).then(base64 => {
+      task.imageBase64 = '';
       setImageBase64(base64);
+      setImageName(file.name);
     });
   }
 
@@ -126,9 +131,11 @@ export default function Task(props) {
             type="file"
             id="imageFile"
             name='imageBase64'
-            //value={task.imageBase64 != null ? task.imageBase64 : imageBase64}
+            //defaultValue={task.fileName ? task.fileName : imageBase64}
             className="taskImage input"
             onChange={(file) => covertToBase64(file)} />
+
+            <img width="100%" className="imageDisplay" src={task && task.imageBase64 ? task.imageBase64 : imageBase64}/>
           <div className="urgencyLabels">
             <label className={`low ${urgencyLevel === "low" ? "selected" : ""}`}>
               <input
