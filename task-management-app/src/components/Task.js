@@ -1,18 +1,15 @@
 import "../styles/task.scss";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
-
-import "react-datepicker/dist/react-datepicker.css";
-import moment from 'moment';
 
 export default function Task(props) {
   const { addTask, deleteTask, moveTask, task } = props;
 
-  const [urgencyLevel, setUrgencyLevel] = useState(task.urgency);
-  const [collapsed, setCollapsed] = useState(task.isCollapsed);
+  const [urgencyLevel, setUrgencyLevel] = useState( task ? task.urgency : '');
+  const [collapsed, setCollapsed] = useState(task ? task.isCollapsed : false);
   const [formAction, setFormAction] = useState("");
   const [deadline, setDeadline] = useState();
   const [imageBase64, setImageBase64] = useState("");
+  const [type, setType] = useState('text');
 
   function setUrgency(event) {
     setUrgencyLevel(event.target.attributes.urgency.value);
@@ -90,93 +87,105 @@ export default function Task(props) {
     });
   }
 
-  return (
-    <div className={`task ${collapsed ? "collapsedTask" : ""}`}>
-      <button onClick={handleMoveLeft} className="button moveTask">
-        &#171;
-      </button>
-      <form onSubmit={handleSubmit} className={collapsed ? "collapsed" : ""}>
-        <input
-          type="text"
-          className="name input"
-          name="name"
-          placeholder="Enter name"
-          disabled={collapsed}
-          defaultValue={task.name}
-        />
-        <textarea
-          rows="2"
-          className="description input"
-          name="description"
-          placeholder="Enter Description"
-          defaultValue={task.description}
-        />
-        <DatePicker
-          name="deadline" className="deadline input"
-          placeholderText="Enter deadline" value={task.deadline != null ? moment(task.deadline).format('L') : deadline}
-          selected={deadline != null ? moment(deadline).format('L') : deadline} onChange={(date) => setDeadline(date)} />
-        <input
-          type="file"
-          id="imageFile"
-          name='imageBase64'
-          //value={task.imageBase64 != null ? task.imageBase64 : imageBase64}
-          className="taskImage input"
-          onChange={(file) => covertToBase64(file)} />
-        <div className="urgencyLabels">
-          <label className={`low ${urgencyLevel === "low" ? "selected" : ""}`}>
-            <input
-              urgency="low"
-              onChange={setUrgency}
-              type="radio"
-              name="urgency"
-            />
-            low
-          </label>
-          <label
-            className={`medium ${urgencyLevel === "medium" ? "selected" : ""}`}
-          >
-            <input
-              urgency="medium"
-              onChange={setUrgency}
-              type="radio"
-              name="urgency"
-            />
-            medium
-          </label>
-          <label
-            className={`high ${urgencyLevel === "high" ? "selected" : ""}`}
-          >
-            <input
-              urgency="high"
-              onChange={setUrgency}
-              type="radio"
-              name="urgency"
-            />
-            high
-          </label>
-        </div>
-        <button
-          onClick={() => {
-            setFormAction("save");
-          }}
-          className="button"
-        >
-          {collapsed ? "Edit" : "Save"}
+  const handleDateChange = (event) => {
+    const { value } = event.target;
+    setDeadline(value);
+  };
+
+  if(task){
+    return (
+      <div className={`task ${collapsed ? "collapsedTask" : ""}`}>
+        <button onClick={handleMoveLeft} className="button moveTask">
+          &#171;
         </button>
-        {collapsed && (
+        <form onSubmit={handleSubmit} className={collapsed ? "collapsed" : ""}>
+          <input
+            type="text"
+            className="name input"
+            name="name"
+            placeholder="Enter name"
+            disabled={collapsed}
+            defaultValue={task ? task.name : ''}
+          />
+          <textarea
+            rows="2"
+            className="description input"
+            name="description"
+            placeholder="Enter Description"
+            defaultValue={task ? task.description : ''}
+          />
+          <input
+            placeholder="Enter deadline"
+            className="deadline input"
+            defaultValue={task ? task.deadline : ''}
+            onFocus={() => setType('date')} 
+            onChange={(e) => handleDateChange(e)}
+            type={type}
+          />
+          <input
+            type="file"
+            id="imageFile"
+            name='imageBase64'
+            //value={task.imageBase64 != null ? task.imageBase64 : imageBase64}
+            className="taskImage input"
+            onChange={(file) => covertToBase64(file)} />
+          <div className="urgencyLabels">
+            <label className={`low ${urgencyLevel === "low" ? "selected" : ""}`}>
+              <input
+                urgency="low"
+                onChange={setUrgency}
+                type="radio"
+                name="urgency"
+              />
+              low
+            </label>
+            <label
+              className={`medium ${urgencyLevel === "medium" ? "selected" : ""}`}
+            >
+              <input
+                urgency="medium"
+                onChange={setUrgency}
+                type="radio"
+                name="urgency"
+              />
+              medium
+            </label>
+            <label
+              className={`high ${urgencyLevel === "high" ? "selected" : ""}`}
+            >
+              <input
+                urgency="high"
+                onChange={setUrgency}
+                type="radio"
+                name="urgency"
+              />
+              high
+            </label>
+          </div>
           <button
             onClick={() => {
-              setFormAction("delete");
+              setFormAction("save");
             }}
-            className="button delete"
+            className="button"
           >
-            X
+            {collapsed ? "Edit" : "Save"}
           </button>
-        )}
-      </form>
-      <button onClick={handleMoveRight} className="button moveTask">
-        &#187;
-      </button>
-    </div>
-  );
+          {collapsed && (
+            <button
+              onClick={() => {
+                setFormAction("delete");
+              }}
+              className="button delete"
+            >
+              X
+            </button>
+          )}
+        </form>
+        <button onClick={handleMoveRight} className="button moveTask">
+          &#187;
+        </button>
+      </div>
+    );
+  }
+ 
 }

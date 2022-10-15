@@ -3,9 +3,16 @@ import "../styles/App.scss";
 import StatusLine from "./StatusLine";
 
 import Button from '@mui/material/Button';
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import Task from "./Task";
+import User from "../pages/User"
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadTasksFromLocalStorage();
@@ -91,8 +98,8 @@ function App() {
   return (
     <div className="App">
       <h1>Task Management</h1>
-      <Button variant="contained">REGISTER</Button>
-      <main>
+      {location.pathname !== '/user' ? <main>
+        <Button onClick={() => navigate('/user')} variant="contained">REGISTER</Button>
         <section>
           <StatusLine
             tasks={tasks}
@@ -119,7 +126,12 @@ function App() {
             status="Done"
           />
         </section>
-      </main>
+      </main> : ''}
+
+      <Routes>
+        <Route path="/" element={<Task />} />
+        <Route path="/user" element={<User />} />
+      </Routes>
     </div>
   );
 }

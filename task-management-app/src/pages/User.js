@@ -1,9 +1,8 @@
+
 function User() {
-    return (
-      <div>
-        <h1>This is the User page</h1>
-      </div>
-    );
-  }
-  
-  export default User;
+  return (
+    <div>this page under maintainance</div>
+  );
+}
+
+export default User;
